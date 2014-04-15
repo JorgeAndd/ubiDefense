@@ -1,4 +1,3 @@
-
 *Descrição:* O jogo ubiDefense *(nome provisório)* será um jogo estilo Tower Defense, em que os jogadores, atráves de dispositivos como tablets e celulares, deverão construir torres em localizações do mundo real para defender ondas de inimigos.
 
 ___________________________________________
@@ -18,4 +17,5 @@ ___________________________________________
 *Tecnologia:*
 - O jogo irá possuir um smartspace de tamanho ainda a ser definido, onde estarão incluidos os dispositivos dos jogadores(tablets, celulares, etc), bem como um servidor central responsável pelo controle de certas funções do jogo(manutenção dos inimigos, criação das rotas e ondas de inimigos)
 - Os dispositivos dos jogadores deverão possuir alguma forma de localização espacial(ex: GPS), para que seja possível determinar onde suas torres serão instaladas.
+- Será necessário o uso de um mapa para localização dos jogadores. O serviço de mapa utilizado ainda será definido.
 - Os dispositivos deverão poder se comunicar com o servidor central(e talvez entre si, ainda a se definir de acordo com a definição completa do gameplay), para que informações do jogo possam ser comunicadas e atualizadas entre todos os jogadores. A princípio essa comunicação deverá se dar de forma contínua e síncrona entre o servidor e os dispositivos clientes.
