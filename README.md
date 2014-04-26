@@ -1,7 +1,7 @@
 *Descrição:* O jogo ubiDefense *(nome provisório)* será um jogo estilo Tower Defense, em que os jogadores, atráves de dispositivos como tablets e celulares, deverão construir torres em localizações do mundo real para defender ondas de inimigos.
 
 ___________________________________________
-**Tétrade Elementar**<br><br>
+**Tétrade Elementar**<br>
 
 *Estética:*
 - ubiDefense será um jogo exclusivamente mobile, jogado através de um smartphone ou tablet, com toda interação sendo feita por meio da tela sensível ao toque.
@@ -14,17 +14,30 @@ ___________________________________________
 - Assim como a estética, a história ainda não foi definida.
 
 *Mecânica:*
-- O objetivo do jogador será construir torres para se defender de ondas de inimigos que irão seguir por caminhos definidos aleatoriamente e em tempo real por um servidor central.
-- Cada torre terá:
- - Um nível;
- - Um elemento que irá depender do período em que ela foi construída(Dia/Noite/Neutro);
- - Um elemento que irá depender do clima de quando ela foi construída(Sol/Chuva/Neutro);
- - Um custo para ser construída;
-- Cada inimigo também terá um nível e dois elementos.
-- A torre terá uma força de ataque igual ao seu nível, e o inimigo terá uma defesa igual ao seu nível, sendo que apenas a torre irá atacar o inimigo.
-- Uma torre de um elemento irá causar o dobro de dano a inimigos de elemento oposto ao seu, e metade para inimigos do mesmo elemento. Torres neutras causam o mesmo dano para todos os inimigos.
-- O nível de uma torre só pode ser aumentado por um jogador diferente dos jogadores que a construíram ou evoluiram.
-- O jogador deverá acumular recursos para construir e evoluir torres. Esses recursos são recebidos à medida que o jogador se locomove pelo ambiente. Ao evoluir uma torre o jogador irá receber um bônus multiplicador, que irá aumentar a quantidade de recursos que ele recebe.
+
+- Mapa:
+ - Cada partida de ubiDefense se passa em um mapa; 
+ - O mapa é um retângulo(tamanho a definir) situado sobre o mundo real; 
+ - O jogadores poderão entrar no mapa, e a partir daí irão participar da mesma partida; 
+
+ 
+- Rota:
+ - A cada determinado intervalo de tempo um novo jogador(aleatório?) é escolhido para desenhar a rota pela qual os monstros seguirão; 
+ - O jogador terá um limite de tamanho, mínimo e máximo, que deverá desenhar a rota; 
+ - A rota deverá começar e terminar em uma extremidade do mapa, sendo que a extremidade de inicio e de final devem ser diferentes; 
+ - A nova rota não poderá cruzar a rota anterior; 
+
+ 
+- Torres:
+ - Cada torre terá 3 atributos: nível, elemento de período(dia/noite/neutro) e elemento de clima(sol/chuva/neutro). 
+ - O jogador deverá acumular recursos para construir as torres. O recursos são acumulados a medida que o jogador se locomove pelo mapa. 
+ - Ao se aproximar de uma torre que foi construída por outro jogador o jogador poderá evolui-la. Cada jogador só poderá evoluir cada torre uma vez. Ao evoluir uma torre o jogador receberá um bônus multiplicador temporário que irá aumentar a quantidade de recursos que ele acumula. 
+
+ 
+- Inimigos: 
+ - O inimigos irão surgir aleatoriamente no começo da rota e a seguirão até o seu final. 
+ - Cada inimigo terá 3 atributos principais: vida, elemento de período(dia/noite/neutro) e elemento de clima(sol/chuva/neutro). 
+ - As torres causam dano nos inimigos igual ao seu nível porém torres de elemento oposto causam o dobro de dano e torres de elemento igual causam metade do dano.
 
 
 *Tecnologia:*
