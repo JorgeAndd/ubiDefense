@@ -29,14 +29,14 @@ ___________________________________________
 
  
 - Torres:
- - Cada torre terá 3 atributos: nível, elemento de período(dia/noite/neutro) e elemento de clima(sol/chuva/neutro). 
+ - Cada torre terá 2 atributos: nível e elemento(dia/noite/neutro). 
  - O jogador deverá acumular recursos para construir as torres. O recursos são acumulados a medida que o jogador se locomove pelo mapa. 
  - Ao se aproximar de uma torre que foi construída por outro jogador o jogador poderá evolui-la. Cada jogador só poderá evoluir cada torre uma vez. Ao evoluir uma torre o jogador receberá um bônus multiplicador temporário que irá aumentar a quantidade de recursos que ele acumula. 
 
  
 - Inimigos: 
  - O inimigos irão surgir aleatoriamente no começo da rota e a seguirão até o seu final. 
- - Cada inimigo terá 3 atributos principais: vida, elemento de período(dia/noite/neutro) e elemento de clima(sol/chuva/neutro). 
+ - Cada inimigo terá 2 atributos principais: vida e elemento(dia/noite/neutro). 
  - As torres causam dano nos inimigos igual ao seu nível porém torres de elemento oposto causam o dobro de dano e torres de elemento igual causam metade do dano.
 
 
