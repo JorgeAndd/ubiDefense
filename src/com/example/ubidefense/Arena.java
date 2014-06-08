@@ -8,42 +8,57 @@ public class Arena {
 	private Point start, end;
 	private List<Tower> towers = new ArrayList<Tower>();
 	private List<Monster> monsters = new ArrayList<Monster>();
+	private List<Player> players = new ArrayList<Player>();
 	private int timer;	
 	private static final int RATE = 600; 
-	
-	public Arena(Point start, Point end)
-	{
-		timer = 0;
+	private boolean startSetted = false;
+	private boolean setted = false;
 		
-		this.start = start;
-		this.end = end;
-		
-		//Set limits of the arena square, with start as the first point and end as the last third.
-		//The points are set in a clock-wise orientation
-		limits[0] = start;
-		
-		limits[1].x = end.x;
-		limits[1].y = start.y;	
-		
-		limits[2] = end;
-		
-		limits[3].x = start.x;
-		limits[3].y = end.y;
+	public void setArenaLimit(Point limit)
+	{		
+		if(!startSetted)
+		{
+			start = limit;
+			startSetted = true;
+		}else
+		{
+			end = limit;
+			
+			//Set limits of the arena square, with start as the first point and end as the last third.
+			//The points are set in a clock-wise orientation
+			limits[0] = start;
+			limits[2] = end;
+			
+			limits[1] = new Point(end.x, start.y);			
+			limits[3] = new Point(start.x, end.y);
+			
+			setted = true;
+		}
+
 	}
 	
+	public void addPlayer(Player player)
+	{
+		players.add(player);
+	}
+	
+	//Check if each monsters is on a tower, than set its course
 	public void checkMonstersTowers()
 	{
+		//For each tower...
 		for(Tower t : towers)
 		{
+			//For each monster...
 			for(Monster m : monsters)
 			{
+				//Check if the monster is near the tower
 				if(t.checkMonsters(m.getPosition()))
 				{
-					m.setOnTower(true);
+					m.setOnTower(t.getId());
 					m.setTarget(t.getLocation());
 				}
 				else
-					m.setOnTower(false);
+					m.removeTarget();
 					
 			}
 		}
@@ -63,13 +78,24 @@ public class Arena {
 		}
 	}
 	
-	public void createTower(int battery, Point location, int signal)
+	public void createTower(int player, int battery, Point location, int signal)
 	{		
-		towers.add(new Tower(battery, location, signal));	
+		towers.add(new Tower(player, battery, location, signal));	
 	}
 	
+	/*
+	 * Return array of arena limits
+	 */
 	public Point[] getLimits()
 	{
 		return limits;
+	}
+	
+	/*
+	 * Check if the arena is already setted
+	 */
+	public boolean checkArena()
+	{
+		return setted;
 	}
 }

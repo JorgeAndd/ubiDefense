@@ -1,13 +1,31 @@
 package com.example.ubidefense;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class Point {
-	public int x;
-	public int y;
+	public double x;
+	public double y;
 	
-	public Point(int x, int y)
+	public Point()	{};
+	
+	public Point(double longitude, double latitude)
 	{
-		this.x = x;
-		this.y = y;
+		this.x = longitude;
+		this.y = latitude;
+	}
+	
+	public Point toPoint(LatLng latlng)
+	{
+		this.x = latlng.longitude;
+		this.y = latlng.latitude;
+		
+		return this;
+	}
+	
+	public LatLng toLatLng()
+	{
+		LatLng coord = new LatLng(y, x);
+		return coord;
 	}
 	
 }
