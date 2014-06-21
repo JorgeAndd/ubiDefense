@@ -14,12 +14,11 @@ public class Point {
 		this.y = latitude;
 	}
 	
-	public Point toPoint(LatLng latlng)
+	public static Point toPoint(LatLng latlng)
 	{
-		this.x = latlng.longitude;
-		this.y = latlng.latitude;
+		Point point =  new Point(latlng.longitude, latlng.latitude);
 		
-		return this;
+		return point;
 	}
 	
 	public LatLng toLatLng()

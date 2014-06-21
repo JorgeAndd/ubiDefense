@@ -1,5 +1,7 @@
 package com.example.ubidefense;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class Tower {
 	private int id;
 	private static int idCounter = 0;
@@ -8,12 +10,12 @@ public class Tower {
 	private int battery;
 	private int signal;
 	
-	private Point location;
+	private LatLng location;
 	
 	private int nMonsters;
 	private static final int RADIUS = 1;
 	
-	public Tower(int player, int battery, Point location, int signal)
+	public Tower(int player, int battery, LatLng location, int signal)
 	{
 		id = idCounter++;
 		ownerID = player;
@@ -33,10 +35,12 @@ public class Tower {
 	 * @param mPos position of the monster which is being checked
 	 * @return true if the monster is near, false otherwise
 	 */
-	public boolean checkMonsters(Point mPos)
+	public boolean checkMonsters(LatLng mPos)
 	{
-		double dx = Math.abs(mPos.x - location.x);
-		double dy = Math.abs(mPos.y - location.y);
+		
+		
+		double dx = Math.abs(mPos.longitude - location.longitude);
+		double dy = Math.abs(mPos.latitude - location.latitude);
 		
 		if(dx > RADIUS || dy > RADIUS || (dx+dy) <= RADIUS)
 			return false;
@@ -49,7 +53,7 @@ public class Tower {
 			return false;
 	}
 	
-	public Point getLocation()
+	public LatLng getLocation()
 	{
 		return location;
 	}

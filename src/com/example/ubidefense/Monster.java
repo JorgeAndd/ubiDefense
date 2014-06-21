@@ -1,18 +1,27 @@
 package com.example.ubidefense;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngCreator;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 public class Monster {
 	private int strenght;
-	private Point position;
+	private LatLng position;
 	private boolean onTower = false;
 	private int onTowerid;
-	private Point target;
-	private static final float SPEED = 0.01f;
+	private LatLng target;
+	private Marker refMarker;
 	
-	public Monster(Point position, int strenght, Point target)
+	private static final float SPEED = 0.1f;
+	private static final float TIME_STEP = 1.f/60.f;
+	
+	public Monster(LatLng position, int strenght, LatLng target, Marker refMarker)
 	{
 		this.position = position;
 		this.strenght = strenght;
 		this.target = target;
+		this.refMarker = refMarker;
 	}
 	
 	
@@ -20,17 +29,18 @@ public class Monster {
 	 *Otherwise return -1
 	 *@param dt delta time
 	 */
-	public int update(int dt)
+	public int update()
 	{
 		move();
 		
-		strenght -= dt;
+		strenght -= 1;
 		
 		//Check if monster is alive
 		if(strenght <= 0)
 			return onTowerid;
 		else
 			return -1;
+		
 	}
 	
 	public void move()
@@ -38,8 +48,21 @@ public class Monster {
 		//Check if monster is not attacking a tower
 		if(!onTower)
 		{
-			position.x += (target.x - position.x)*SPEED;
-			position.y += (target.y - position.y)*SPEED;
+			
+			double dx = target.longitude - position.longitude;
+			double dy = target.latitude - position.latitude;
+			
+			double lenght = Math.sqrt((dx*dx) + (dy*dy));
+			
+			//Normalize d "vector"
+			dx /= lenght;
+			dy /= lenght;
+			
+			dx *= 0.000001;
+			dy *= 0.000001;
+			
+			position = new LatLng(position.latitude + dy, 
+									position.longitude + dx);
 		}
 	}
 	
@@ -54,9 +77,14 @@ public class Monster {
 	//
 	//Getters
 	//
-	public Point getPosition()
+	public LatLng getPosition()
 	{
 		return position;
+	}
+		
+	public Marker getMarker()
+	{
+		return refMarker;
 	}
 	
 	//
@@ -76,8 +104,13 @@ public class Monster {
 	 * set the target tower or location
 	 * @param target point to which the monster will go
 	 */
-	public void setTarget(Point target)
+	public void setTarget(LatLng target)
 	{
 		this.target = target;
+	}
+	
+	public void onDie()
+	{
+		//refMarker.remove();
 	}
 }

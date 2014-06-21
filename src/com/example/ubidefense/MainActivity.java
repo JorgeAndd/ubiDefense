@@ -65,54 +65,49 @@ public class MainActivity extends Activity {
 	    game.setMap(map);
 	  }
 	  
-	  /*@Override
-	  protected void onStart()
-	  {
-		  
-		  //game.setMap(map);
-	  }
-	  */
 	  private void setMapListener()
 	  {
-		  map.setOnMapClickListener(new OnMapClickListener() {
+		  map.setOnMapLongClickListener(new OnMapLongClickListener() {
 				
 				@Override
-				public void onMapClick(LatLng latLng) {
+				public void onMapLongClick(LatLng latLng) {
 					MarkerOptions marker = new MarkerOptions();
 					
-
 					// Setting the position for the marker
-					marker.position(latLng);
+					marker.position(latLng);												
 					
-				    // Setting the title for the marker.
-	  			    // This will be displayed on taping the marker
-				    marker.title(latLng.latitude + " : " + latLng.longitude);
-				
-				    // Clears the previously touched position
-				    //map.clear();
-				
-				    // Animating to the touched position
-				    map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-				
-				    marker.icon(BitmapDescriptorFactory.fromAsset("portal.png"));
-				    // Placing a marker on the touched position
-				    map.addMarker(marker);
-				  
-				    
+					//Check if arena is already setted
 				    if(!game.getArena().checkArena())
 				    {
-				    	game.setUpArena(marker.getPosition());
-				    	//new AlertDialog.Builder(MainActivity.this).setMessage("Arena ++").show(); 	
+				    	//Do this when click if arena is not setted
+				    	
+					    marker.icon(BitmapDescriptorFactory.fromAsset("portal.png"));
+					    
+					    // Placing a marker on the touched position
+					    map.addMarker(marker);
+				    	
+				    	if(game.setUpArena(latLng))
+				    		startWorker();	
 				    }
 				    else
 				    {
-				    	int signal = mainWifi.getScanResults().size();
+				    	//Do this when click if arena is setted
 				    	
-				    	new AlertDialog.Builder(MainActivity.this).setMessage("# Connections = " + signal).show(); 				    	
-				    	 	
-				    	//game.setTower(0, battery, location, signal);
+						  int signal = mainWifi.getScanResults().size();
+
+						  new AlertDialog.Builder(MainActivity.this).setMessage("# Connections = " + signal).show(); 				    	
+
+						  map.addMarker(marker);
+						  game.setTower(0, 50, marker.getPosition(), signal);
 				    }
 				}
 			});		
 	  }
+	  
+	  private void startWorker()
+	  {
+		  game.execute();
+	  }
+	  
+	  
 }
