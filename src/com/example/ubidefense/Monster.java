@@ -1,31 +1,30 @@
 package com.example.ubidefense;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngCreator;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class Monster {
+	private int id;
 	private int strenght;
 	private LatLng position;
 	private boolean onTower = false;
 	private int onTowerid;
 	private LatLng target;
-	private Marker refMarker;
 	
 	private static final float SPEED = 0.1f;
 	private static final float TIME_STEP = 1.f/60.f;
 	
-	public Monster(LatLng position, int strenght, LatLng target, Marker refMarker)
+	public Monster(LatLng position, int strenght, LatLng target, int id)
 	{
 		this.position = position;
 		this.strenght = strenght;
 		this.target = target;
-		this.refMarker = refMarker;
+		this.id = id;
 	}
 	
 	
-	/**Check if monster. If the monster is dead, return the tower the monster were attacking, if it weren't on any tower return -1.
+	/**If the monster is dead, return the tower the monster were attacking, if it weren't on any tower return -1.
 	 *Otherwise return -1
 	 *@param dt delta time
 	 */
@@ -33,7 +32,7 @@ public class Monster {
 	{
 		move();
 		
-		strenght -= 1;
+		//strenght -= 1;
 		
 		//Check if monster is alive
 		if(strenght <= 0)
@@ -74,6 +73,14 @@ public class Monster {
 		onTower = false;
 	}
 	
+	/*
+	 * set monster strenght to 0
+	 */
+	public void kill()
+	{
+		strenght = 0;
+	}
+	
 	//
 	//Getters
 	//
@@ -81,10 +88,10 @@ public class Monster {
 	{
 		return position;
 	}
-		
-	public Marker getMarker()
+	
+	public int getId()
 	{
-		return refMarker;
+		return id;
 	}
 	
 	//
@@ -109,8 +116,10 @@ public class Monster {
 		this.target = target;
 	}
 	
-	public void onDie()
+	public boolean isDead()
 	{
-		//refMarker.remove();
+		return false;
+		
+		//return (strenght <= 0) ? true : false;
 	}
 }

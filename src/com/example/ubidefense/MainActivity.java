@@ -19,9 +19,9 @@ import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 
@@ -30,6 +30,7 @@ public class MainActivity extends Activity {
 	  private GameLoop game = new GameLoop();
 	  private WifiManager mainWifi;
 	  private boolean running = true;
+	  private int signal = 0;
 	  
 	  @Override
 	  protected void onCreate(Bundle savedInstanceState) {
@@ -70,21 +71,12 @@ public class MainActivity extends Activity {
 		  map.setOnMapLongClickListener(new OnMapLongClickListener() {
 				
 				@Override
-				public void onMapLongClick(LatLng latLng) {
-					MarkerOptions marker = new MarkerOptions();
-					
-					// Setting the position for the marker
-					marker.position(latLng);												
-					
+				public void onMapLongClick(LatLng latLng) {					
 					//Check if arena is already setted
 				    if(!game.getArena().checkArena())
 				    {
 				    	//Do this when click if arena is not setted
-				    	
-					    marker.icon(BitmapDescriptorFactory.fromAsset("portal.png"));
-					    
-					    // Placing a marker on the touched position
-					    map.addMarker(marker);
+				    	map.addCircle(new CircleOptions().center(latLng).fillColor(Color.RED).strokeColor(Color.TRANSPARENT).radius(0.5d));
 				    	
 				    	if(game.setUpArena(latLng))
 				    		startWorker();	
@@ -93,12 +85,12 @@ public class MainActivity extends Activity {
 				    {
 				    	//Do this when click if arena is setted
 				    	
-						  int signal = mainWifi.getScanResults().size();
+						  //int signal = mainWifi.getScanResults().size();
+						  
+						  signal++;		    	
 
-						  new AlertDialog.Builder(MainActivity.this).setMessage("# Connections = " + signal).show(); 				    	
-
-						  map.addMarker(marker);
-						  game.setTower(0, 50, marker.getPosition(), signal);
+						  game.addTower(0, 50, latLng, signal);
+						  
 				    }
 				}
 			});		

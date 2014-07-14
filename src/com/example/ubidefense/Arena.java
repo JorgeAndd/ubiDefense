@@ -3,17 +3,16 @@ package com.example.ubidefense;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.util.SparseArray;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class Arena {
 	private LatLng[] limits = new LatLng[4];
 	private LatLng start, end;
 	private List<Tower> towers = new ArrayList<Tower>();
-	private List<Monster> monsters = new ArrayList<Monster>();
-	private List<Marker> obsoleteMarkers = new ArrayList<Marker>();
+	private SparseArray<Monster> monsters = new SparseArray();
 
 	private List<Player> players = new ArrayList<Player>();
 	private float timer;	
@@ -44,6 +43,8 @@ public class Arena {
 			limits[1] = new LatLng(c.latitude + d.longitude, c.longitude - d.latitude);			
 			limits[3] = new LatLng(c.latitude - d.longitude, c.longitude + d.latitude);
 			
+			
+			
 			setted = true;
 		}
 
@@ -53,35 +54,7 @@ public class Arena {
 	{
 		players.add(player);
 	}
-	
-	public void addMonster(Marker marker)
-	{
-		Monster monster = new Monster(start, 10, end, marker);
-		
-		monsters.add(monster);
-	}
-	
-	//Check if each monsters is on a tower, than set its course
-	public void checkMonstersTowers()
-	{
-		//For each tower...
-		for(Tower t : towers)
-		{
-			//For each monster...
-			for(Monster m : monsters)
-			{
-				//Check if the monster is near the tower
-				if(t.checkMonsters(m.getPosition()))
-				{
-					m.setOnTower(t.getId());
-					m.setTarget(t.getLocation());
-				}
-				else
-					m.removeTarget();
-					
-			}
-		}
-	}
+
 	
 	/*
 	 * updates arena components: monsters
@@ -89,29 +62,52 @@ public class Arena {
 	 * @return true if a monster need to be created
 	 */
 	public Boolean update(GoogleMap map)
-	{
-		//checkMonstersTowers();
-		
+	{		
 		//Updates monsters positions
-		for(Monster m : monsters)
+		for(int i = 0; i < monsters.size(); i++)
 		{
+			Monster m = monsters.valueAt(i);
+			
+			double distance;
+			double minDistance = 0;
+			Tower closestTower = null;
+			
 			m.update();
+			/*
+			//Check if monster is atracted to tower
+			for(Tower t : towers)
+			{
+				//Check distance between monster and tower
+				Point diff = new Point((m.getPosition().longitude - t.getPosition().longitude), (m.getPosition().latitude - t.getPosition().latitude));
+				distance = Math.sqrt((diff.x*diff.x) + (diff.y*diff.y));
+				
+				//Check if monster is inside tower's radius
+				if(distance <= t.getRadius())
+				{
+					if(distance < minDistance || closestTower == null)
+					{
+						minDistance = distance;
+						closestTower = t;
+					}
+				}	
+			}
+			m.setTarget(closestTower.getPosition());
+			if(closestTower.checkMonsters(minDistance))
+				m.setOnTower(closestTower.getId());
 			
+			*/
 			//Check if monster reached end of arena
-			
 			Point diff = new Point((m.getPosition().longitude - end.longitude), (m.getPosition().latitude - end.latitude));
 			double lenght = Math.sqrt((diff.x*diff.x) + (diff.y*diff.y));
 			
 			if(lenght <= 0.000001)
-			{
-				Marker marker = m.getMarker();
-				obsoleteMarkers.add(marker);				
-				monsters.remove(m);
+			{			
+				m.kill();
 				
 				lives--;
 			}
-				
-		}
+		}		
+		
 		
 		//Create monster
 		timer += 1.f/60.f;
@@ -128,17 +124,23 @@ public class Arena {
 
 	}
 	
-	public void createTower(int player, int battery, LatLng location, int signal)
+	public void addTower(int player, int battery, LatLng location, int signal, int id)
 	{		
-		towers.add(new Tower(player, battery, location, signal));	
+		towers.add(id, new Tower(player, battery, location, signal, id));	
 	}
-		
+	
 	/*
-	 * Clear the list of obsolete markers
+	 * Add monster to monster list
+	 * @param id monster id
+	 * @return new monster created
 	 */
-	public void clearObsolete()
+	public Monster addMonster(int id)
 	{
-		obsoleteMarkers.clear();
+		Monster m = new Monster(start, 10, end, id);
+		
+		monsters.append(id, m);
+		
+		return m;
 	}
 	
 	/*
@@ -149,23 +151,30 @@ public class Arena {
 		return limits;
 	}
 	
-	public List<Monster> getMonsters() {
+	public SparseArray<Monster> getMonsters() {
 		return monsters;
 	}
 	
-	/*
-	 * Get list of obsolete markers
-	 */
-	public List<Marker> getObsoletMarkers()
+	public List<Tower> getTowers()
 	{
-		return obsoleteMarkers;
+		return towers;
 	}
-	
+		
 	/*
 	 * Check if the arena is already setted
 	 */
 	public boolean checkArena()
 	{
 		return setted;
+	}
+	
+	public void removeTower(int Towerid)
+	{
+		towers.remove(Towerid);
+	}
+	
+	public void removeMonster(int Monsterid)
+	{	
+		monsters.remove(Monsterid);
 	}
 }
