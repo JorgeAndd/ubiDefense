@@ -9,6 +9,7 @@ public class Tower {
 	
 	private int battery;
 	private int signal;
+	private float lossRate = 0.1f;
 	private double radius;
 	
 	private LatLng location;
@@ -32,7 +33,7 @@ public class Tower {
 		isDrawn = false;
 	}
 	
-	public void update(float lossRate)
+	public void update()
 	{
 		battery -= (lossRate*nMonsters);			
 	}
@@ -42,10 +43,10 @@ public class Tower {
 	 * @param mPos position of the monster which is being checked
 	 * @return true if the monster is near, false otherwise
 	 */
-	public boolean checkMonsters(long distance)
+	public boolean checkMonsters(double minDistance)
 	{	
 
-		if(distance <= PROX_RADIUS)
+		if(minDistance <= PROX_RADIUS)
 		{
 			nMonsters++;
 			return true;

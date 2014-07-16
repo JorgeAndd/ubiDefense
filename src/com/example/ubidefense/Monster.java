@@ -11,9 +11,10 @@ public class Monster {
 	private boolean onTower = false;
 	private int onTowerid;
 	private LatLng target;
+	public boolean drawn = false;
 	
-	private static final float SPEED = 0.1f;
-	private static final float TIME_STEP = 1.f/60.f;
+	private static final float SPEED = 1f;
+	private static final float TIME_STEP = 1.f/30.f;
 	
 	public Monster(LatLng position, int strenght, LatLng target, int id)
 	{
@@ -47,18 +48,16 @@ public class Monster {
 		//Check if monster is not attacking a tower
 		if(!onTower)
 		{
-			
 			double dx = target.longitude - position.longitude;
 			double dy = target.latitude - position.latitude;
 			
-			double lenght = Math.sqrt((dx*dx) + (dy*dy));
+			double lenght = Auxiliar.distance(target, position);
 			
-			//Normalize d "vector"
-			dx /= lenght;
-			dy /= lenght;
-			
-			dx *= 0.000001;
-			dy *= 0.000001;
+			if(lenght > SPEED * TIME_STEP)
+			{
+				dx *= (SPEED * TIME_STEP)/lenght;
+				dy *= (SPEED * TIME_STEP)/lenght;
+			}
 			
 			position = new LatLng(position.latitude + dy, 
 									position.longitude + dx);
@@ -94,16 +93,24 @@ public class Monster {
 		return id;
 	}
 	
+	public int getTowerId()
+	{
+		return onTowerid;
+	}
+	
 	//
 	//Setters
 	//
 	
 	/*
 	 * set the tower the monster is attacking
-	 * @param towerId id of the tower the monster is attacking now
+	 * @param towerId id of the tower the monster is attacking now. -1 if is not in any tower
 	 */
 	public void setOnTower(int towerId)
 	{
+		if(towerId == -1)
+			onTower = false;
+		
 		onTowerid = towerId;
 	}
 	
@@ -116,10 +123,9 @@ public class Monster {
 		this.target = target;
 	}
 	
+	
 	public boolean isDead()
-	{
-		return false;
-		
-		//return (strenght <= 0) ? true : false;
+	{		
+		return (strenght <= 0) ? true : false;
 	}
 }

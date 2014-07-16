@@ -11,15 +11,17 @@ import com.google.android.gms.maps.model.LatLng;
 public class Arena {
 	private LatLng[] limits = new LatLng[4];
 	private LatLng start, end;
-	private List<Tower> towers = new ArrayList<Tower>();
-	private SparseArray<Monster> monsters = new SparseArray();
+	private SparseArray<Tower> towers = new SparseArray<Tower>();
+	private SparseArray<Monster> monsters = new SparseArray<Monster>();
 
 	private List<Player> players = new ArrayList<Player>();
 	private float timer;	
-	private static final int RATE = 6; 
+	private static final int RATE = 10; 
 	private boolean startSetted = false;
 	private boolean setted = false;
 	private int lives = 20;
+	
+	private boolean needMonsters = false;
 		
 	public void setArenaLimit(LatLng limit)
 	{		
@@ -43,7 +45,7 @@ public class Arena {
 			limits[1] = new LatLng(c.latitude + d.longitude, c.longitude - d.latitude);			
 			limits[3] = new LatLng(c.latitude - d.longitude, c.longitude + d.latitude);
 			
-			
+			timer = RATE;
 			
 			setted = true;
 		}
@@ -61,8 +63,12 @@ public class Arena {
 	 * 
 	 * @return true if a monster need to be created
 	 */
-	public Boolean update(GoogleMap map)
-	{		
+	public void update()
+	{	
+		//Updates towers
+		for(int i = 0; i < towers.size(); i++)
+			towers.valueAt(i).update();
+		
 		//Updates monsters positions
 		for(int i = 0; i < monsters.size(); i++)
 		{
@@ -72,14 +78,22 @@ public class Arena {
 			double minDistance = 0;
 			Tower closestTower = null;
 			
-			m.update();
-			/*
-			//Check if monster is atracted to tower
-			for(Tower t : towers)
+			monsters.valueAt(i).update();
+			
+			int onTower = m.getTowerId(); 
+			//Check if monster is attracted to a dead tower
+			if(onTower != -1 && towers.get(onTower) == null)
 			{
+				m.setOnTower(-1);
+				m.setTarget(end);
+			}		
+			//Check if monster is attracted to tower
+			for(int j = 0; j < towers.size(); j++)
+			{
+				Tower t = towers.valueAt(j);
+				
 				//Check distance between monster and tower
-				Point diff = new Point((m.getPosition().longitude - t.getPosition().longitude), (m.getPosition().latitude - t.getPosition().latitude));
-				distance = Math.sqrt((diff.x*diff.x) + (diff.y*diff.y));
+				distance = Auxiliar.distance(m.getPosition(), t.getPosition());
 				
 				//Check if monster is inside tower's radius
 				if(distance <= t.getRadius())
@@ -91,11 +105,16 @@ public class Arena {
 					}
 				}	
 			}
-			m.setTarget(closestTower.getPosition());
-			if(closestTower.checkMonsters(minDistance))
-				m.setOnTower(closestTower.getId());
 			
-			*/
+			
+			if(closestTower != null)
+			{
+				m.setTarget(closestTower.getPosition());
+				if(closestTower.checkMonsters(minDistance))
+					m.setOnTower(closestTower.getId());
+			}
+			
+			
 			//Check if monster reached end of arena
 			Point diff = new Point((m.getPosition().longitude - end.longitude), (m.getPosition().latitude - end.latitude));
 			double lenght = Math.sqrt((diff.x*diff.x) + (diff.y*diff.y));
@@ -110,23 +129,20 @@ public class Arena {
 		
 		
 		//Create monster
-		timer += 1.f/60.f;
+		timer += 1.f/30.f;
 		
 		if(timer >= RATE)
 		{
 			timer = 0;
 			
-			return true;
-		}
-		
-		return false;
-		
+			needMonsters = true;
+		}		
 
 	}
 	
 	public void addTower(int player, int battery, LatLng location, int signal, int id)
 	{		
-		towers.add(id, new Tower(player, battery, location, signal, id));	
+		towers.append(id, new Tower(player, battery, location, signal, id));	
 	}
 	
 	/*
@@ -139,6 +155,8 @@ public class Arena {
 		Monster m = new Monster(start, 10, end, id);
 		
 		monsters.append(id, m);
+		
+		needMonsters = false;
 		
 		return m;
 	}
@@ -155,7 +173,7 @@ public class Arena {
 		return monsters;
 	}
 	
-	public List<Tower> getTowers()
+	public SparseArray<Tower> getTowers()
 	{
 		return towers;
 	}
@@ -169,12 +187,17 @@ public class Arena {
 	}
 	
 	public void removeTower(int Towerid)
-	{
-		towers.remove(Towerid);
+	{		
+		towers.remove(Towerid);	
 	}
 	
 	public void removeMonster(int Monsterid)
 	{	
 		monsters.remove(Monsterid);
+	}
+	
+	public boolean needMonster()
+	{
+		return needMonsters;
 	}
 }

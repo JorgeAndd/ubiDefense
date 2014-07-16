@@ -17,17 +17,21 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 
-public class GameLoop extends AsyncTask<Void, Void, Void> {
+public class GameLoop extends AsyncTask<Void, Void, Void> {	
 	private Arena arena;
 	private boolean running = false;
 	private GoogleMap map;
-	private int needMonster = 0;
 	
 	private List<Circle> towersCircles = new ArrayList<Circle>();
 	private List<Circle> radiusCircles = new ArrayList<Circle>();
-	private SparseArray<Circle> monstersCircles = new SparseArray();
+	private SparseArray<Marker> monstersCircles = new SparseArray<Marker>();
+	
 	
 	public GameLoop() {
 		arena = new Arena();
@@ -49,45 +53,54 @@ public class GameLoop extends AsyncTask<Void, Void, Void> {
 
 	protected Void doInBackground(Void... params) {
 		
-		float accumulator, lastTime;
-		float dt = 1.f/60.f;
+		double SKIP_TICKS = 1000/60.0D;
+		int MAX_FRAMESKIP = 10;
 		
-		lastTime = SystemClock.uptimeMillis()/1000.f;
-		accumulator = 0.f;
+		double next_game_tick = SystemClock.uptimeMillis();
+		int loops;
 		
 		while (running) {
-			float nowTime = SystemClock.uptimeMillis()/1000.f;
-			float frameTime = nowTime - lastTime;
-			lastTime = nowTime;
-			accumulator += frameTime;
-			
-			//Update stuff
-			if(accumulator >= dt)
+			loops = 0;
+			while(SystemClock.uptimeMillis() > next_game_tick && loops < MAX_FRAMESKIP)
 			{
-				if(arena.update(map))
-					needMonster++;
+				arena.update();
+				//Add just one monster, for test purposes
+				if(arena.getMonsters().size() < 1)
+					addMonster();
 				
-				accumulator -= dt;
+				next_game_tick += SKIP_TICKS;
+				loops++;
 			}
 			//Render stuff
 			publishProgress();
 		}
-
+		
 		return null;
 
 	}
-
 	/*
 	 * Do every render related operations
 	 */
 	public void onProgressUpdate(Void... params) {
 		//Move monsters
 		
+		
 		for(int i = 0; i < arena.getMonsters().size();) {
 			Monster m = arena.getMonsters().valueAt(i);
 			
 			int id = m.getId();
-			Circle circle = monstersCircles.get(id);
+						
+			//Check if monster circle is already drawn. If not, draw 
+			if(arena.getMonsters().valueAt(i).drawn == false)
+			{
+				Marker newCircle = map.addMarker(new MarkerOptions().position(arena.getMonsters().valueAt(i).getPosition())
+																		.icon(BitmapDescriptorFactory.fromAsset("skull.png"))
+																		.anchor(0.5f, 0.5f));
+				monstersCircles.append(m.getId(), newCircle);
+				arena.getMonsters().valueAt(i).drawn = true;
+			}
+			
+			Marker circle = monstersCircles.get(id);
 			
 			if(m.isDead())
 			{
@@ -96,22 +109,17 @@ public class GameLoop extends AsyncTask<Void, Void, Void> {
 				monstersCircles.remove(id);
 			}else
 			{
-				circle.setCenter(m.getPosition());
+				circle.setPosition(m.getPosition());
 				i++;
 			}
 		}
+
 		
-		//Draw monsters
-		while(needMonster > 0)
+		//Updates towers	
+		for(int i = 0; i < arena.getTowers().size(); i++)
 		{
-			addMonster();
+			Tower t = arena.getTowers().valueAt(i);
 			
-			needMonster--;
-		}
-		
-		//Update towers	
-		for(Tower t : arena.getTowers())
-		{
 			int id = t.getId();
 			
 			//Check if tower is already drawn	
@@ -172,10 +180,7 @@ public class GameLoop extends AsyncTask<Void, Void, Void> {
 	public void addMonster()
 	{
 		int id = monstersCircles.size();
-		Monster m = arena.addMonster(id);
-		
-		Circle newCircle = map.addCircle(new CircleOptions().center(m.getPosition()).fillColor(Color.YELLOW).strokeColor(Color.TRANSPARENT).radius(0.5d));
-		monstersCircles.append(id, newCircle);
+		arena.addMonster(id);
 	}	
 	
 }

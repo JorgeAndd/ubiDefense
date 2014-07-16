@@ -29,7 +29,6 @@ public class MainActivity extends Activity {
 	  private GoogleMap map;
 	  private GameLoop game = new GameLoop();
 	  private WifiManager mainWifi;
-	  private boolean running = true;
 	  private int signal = 0;
 	  
 	  @Override
@@ -76,7 +75,7 @@ public class MainActivity extends Activity {
 				    if(!game.getArena().checkArena())
 				    {
 				    	//Do this when click if arena is not setted
-				    	map.addCircle(new CircleOptions().center(latLng).fillColor(Color.RED).strokeColor(Color.TRANSPARENT).radius(0.5d));
+				    	map.addCircle(new CircleOptions().center(latLng).fillColor(Color.GRAY).strokeColor(Color.TRANSPARENT).radius(0.5d));
 				    	
 				    	if(game.setUpArena(latLng))
 				    		startWorker();	
