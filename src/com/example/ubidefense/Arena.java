@@ -117,11 +117,7 @@ public class Arena {
 				}
 			}
 			
-			
 			//Check if monster reached end of arena
-			//Point diff = new Point((m.getPosition().longitude - end.longitude), (m.getPosition().latitude - end.latitude));
-			//double lenght = Math.sqrt((diff.x*diff.x) + (diff.y*diff.y));
-			
 			if(m.getPosition().equals(end))
 			{			
 				m.kill();
@@ -202,5 +198,10 @@ public class Arena {
 	public boolean needMonster()
 	{
 		return needMonsters;
+	}
+	
+	public int getLives()
+	{
+		return lives;
 	}
 }

@@ -33,7 +33,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 
 public class MainActivity extends Activity {
 	  private GoogleMap map;
-	  private GameLoop game = new GameLoop();
+	  private GameLoop game = new GameLoop(this);
 	  private WifiManager mainWifi;
 	  private int signal = 0;
 	  private LocationManager locationManager;

@@ -15,7 +15,7 @@ public class Monster {
 	private LatLng target;
 	public boolean drawn = false;
 	
-	private static final float SPEED = 5f;
+	private static final float SPEED = 1f;
 	private static final float TIME_STEP = 1.f/30.f;
 	
 	public Monster(LatLng position, int strenght, LatLng target, int id)
@@ -50,28 +50,19 @@ public class Monster {
 		//Check if monster is not attacking a tower
 		if(!onTower)
 		{
+			double dx = target.longitude - position.longitude;
+			double dy = target.latitude - position.latitude;
 			
-			double dx = (target.longitude - position.longitude);
-			double dy = (target.latitude - position.latitude);
-	
-			double lenght = Math.sqrt(dx*dx + dy*dy);
-			//lenght = Auxiliar.distance(target, position);
+			double lenght = Auxiliar.distance(target, position);
 			
-			dx /= lenght;
-			dy /= lenght;
-			
-			dx *= (SPEED*TIME_STEP);
-			dy *= (SPEED*TIME_STEP);
-			
-			/*
 			if(lenght > SPEED * TIME_STEP)
 			{
 				dx *= (SPEED * TIME_STEP)/lenght;
 				dy *= (SPEED * TIME_STEP)/lenght;
 			}
-			*/
-			position = new LatLng(position.latitude + dy,
-			position.longitude + dx);
+			
+			position = new LatLng(position.latitude + dy, 
+									position.longitude + dx);
 		}
 	}
 	

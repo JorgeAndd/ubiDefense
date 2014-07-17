@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.SystemClock;
@@ -29,14 +30,16 @@ public class GameLoop extends AsyncTask<Void, Void, Void> {
 	private Arena arena;
 	private boolean running = false;
 	private GoogleMap map;
+	private Activity activityContext;
 	
 	private List<Circle> towersCircles = new ArrayList<Circle>();
 	private List<Circle> radiusCircles = new ArrayList<Circle>();
 	private SparseArray<Marker> monstersCircles = new SparseArray<Marker>();
 	
 	
-	public GameLoop() {
+	public GameLoop(Activity activity) {
 		arena = new Arena();
+		activityContext = activity;
 	}
 
 	public Boolean setUpArena(LatLng location) {
@@ -54,12 +57,13 @@ public class GameLoop extends AsyncTask<Void, Void, Void> {
 	}
 
 	protected Void doInBackground(Void... params) {
-		double SKIP_TICKS = 1000.0D/30.0D;
+		
+		double SKIP_TICKS = 1000/60.0D;
 		int MAX_FRAMESKIP = 10;
-
+		
 		double next_game_tick = SystemClock.uptimeMillis();
 		int loops;
-
+		
 		while (running) {
 			loops = 0;
 			while(SystemClock.uptimeMillis() > next_game_tick && loops < MAX_FRAMESKIP)
@@ -68,21 +72,24 @@ public class GameLoop extends AsyncTask<Void, Void, Void> {
 				//Add just one monster, for test purposes
 				if(arena.getMonsters().size() < 1)
 					addMonster();
-		
+				
 				next_game_tick += SKIP_TICKS;
 				loops++;
 			}
 			//Render stuff
 			publishProgress();
 		}
-
 		return null;
-
 	}
 	/*
 	 * Do every render related operations
 	 */
 	public void onProgressUpdate(Void... params) {
+		//Updates lives
+		int lives = arena.getLives();
+		TextView livesT= (TextView)activityContext.findViewById(R.id.livesText);
+		livesT.setText("Vidas: " + lives);
+		
 		
 		//Move monsters
 		for(int i = 0; i < arena.getMonsters().size();) {
