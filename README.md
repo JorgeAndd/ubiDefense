@@ -11,37 +11,29 @@ ___________________________________________
  - Lista das torres que o jogador pode construir no momento;
 
 *História:*
-- Assim como a estética, a história ainda não foi definida.
+- O jogo se passa em um cenário virtual, onde os inimigos representam vírus de computadores que querem invadir um sistema. O usuário deve proteger esse sistema colocando emissores de sinais que irão atrair, fazendo-os perder sua força antes que eles cheguem ao seu alvo.
 
 *Mecânica:*
 
 - Mapa:
  - Cada partida de ubiDefense se passa em um mapa; 
- - O mapa é um retângulo(tamanho a definir) situado sobre o mundo real; 
- - O jogadores poderão entrar no mapa, e a partir daí irão participar da mesma partida; 
+ - Um jogador pode iniciar uma partida ao desenhar um quadrado, selecionando pontos que serão dois vértices opostos. Esse quadrado irá representar o mapa em que se passará a partida, onde outros jogadores poderão participar;
 
- 
-- Rota:
- - A cada determinado intervalo de tempo um novo jogador(aleatório?) é escolhido para desenhar a rota pela qual os monstros seguirão; 
- - O jogador terá um limite de tamanho, mínimo e máximo, que deverá desenhar a rota; 
- - A rota deverá começar e terminar em uma extremidade do mapa, sendo que a extremidade de inicio e de final devem ser diferentes; 
- - A nova rota não poderá cruzar a rota anterior; 
 
- 
 - Torres:
- - Cada torre terá 2 atributos: nível e elemento(dia/noite/neutro). 
- - O jogador deverá acumular recursos para construir as torres. O recursos são acumulados a medida que o jogador se locomove pelo mapa. 
- - Ao se aproximar de uma torre que foi construída por outro jogador o jogador poderá evolui-la. Cada jogador só poderá evoluir cada torre uma vez. Ao evoluir uma torre o jogador receberá um bônus multiplicador temporário que irá aumentar a quantidade de recursos que ele acumula. 
+ - Os jogadores deverão construir torres que irão atrair os inimigos. Essas torres terão dois atributos: sinal e bateria:
+    - Sinal: Representa a área de alcance da torre. É definido pela quantidade de redes wifi que o dispositivo do jogador encontrar na hora de sua construção;
+    - Vida: Representa a vida da torre. É definido pela quantidade de bateria que o dispositivo do jogador possui na hora de sua construção;
 
  
 - Inimigos: 
- - O inimigos irão surgir aleatoriamente no começo da rota e a seguirão até o seu final. 
- - Cada inimigo terá 2 atributos principais: vida e elemento(dia/noite/neutro). 
- - As torres causam dano nos inimigos igual ao seu nível porém torres de elemento oposto causam o dobro de dano e torres de elemento igual causam metade do dano.
+ -Os inimigos surgem no começo da arena e seguem em linha reta até o seu final. Eles possuem uma quantidade de energia, que determina o tempo que irão sobreviver na arena;
+ -Ao entrarem dentro do raio de alcance de uma torre eles seguem em linha reta em direção a essa torre;
+ -Ao chegarem na torre, os inimigos diminuem a bateria da torre;
 
 
 *Tecnologia:*
-- O jogo irá possuir um smartspace de tamanho ainda a ser definido, onde estarão incluidos os dispositivos dos jogadores(tablets, celulares, etc), bem como um servidor central responsável pelo controle de certas funções do jogo(manutenção dos inimigos, criação das rotas e ondas de inimigos). Para um teste inicial será considerado o campus Darcy Ribeiro da Unb.
+- O jogo irá possuir um smartspace de tamanho ainda a ser definido, onde estarão incluidos os dispositivos dos jogadores(tablets, celulares, etc), bem como um servidor central responsável pelo controle de certas funções do jogo(manutenção dos inimigos, criação das rotas e ondas de inimigos). 
 - Os dispositivos dos jogadores deverão possuir alguma forma de localização espacial(ex: GPS), para que seja possível determinar onde suas torres serão instaladas, além da distância percorrida pelo jogador para acumulação de recursos.
-- Será necessário o uso de um mapa para localização dos jogadores. O serviço de mapa utilizado ainda será definido.
-- Os dispositivos deverão poder se comunicar com o servidor central(e talvez entre si, ainda a se definir de acordo com a definição completa do gameplay), para que informações do jogo possam ser comunicadas e atualizadas entre todos os jogadores. A princípio essa comunicação deverá se dar de forma contínua e síncrona entre o servidor e os dispositivos clientes.
+- Será utilizado a API do Google Maps para a exibição e uso do mapa;
+- Os dispositivos deverão poder se comunicar com o servidor central, para que informações do jogo possam ser comunicadas e atualizadas entre todos os jogadores. A princípio essa comunicação deverá se dar de forma contínua e síncrona entre o servidor e os dispositivos clientes.
