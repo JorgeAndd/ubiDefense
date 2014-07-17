@@ -2,15 +2,21 @@ package com.example.ubidefense;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.wifi.WifiManager;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,6 +36,7 @@ public class MainActivity extends Activity {
 	  private GameLoop game = new GameLoop();
 	  private WifiManager mainWifi;
 	  private int signal = 0;
+	  private LocationManager locationManager;
 	  
 	  @Override
 	  protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +53,7 @@ public class MainActivity extends Activity {
 
 	    map.setMyLocationEnabled(true);
 	    
-	    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+	    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 	    
 	    Criteria criteria = new Criteria();
 	    Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
@@ -65,6 +72,8 @@ public class MainActivity extends Activity {
 	    game.setMap(map);
 	  }
 	  
+	  
+	  
 	  private void setMapListener()
 	  {
 		  map.setOnMapLongClickListener(new OnMapLongClickListener() {
@@ -78,7 +87,12 @@ public class MainActivity extends Activity {
 				    	map.addCircle(new CircleOptions().center(latLng).fillColor(Color.GRAY).strokeColor(Color.TRANSPARENT).radius(0.5d));
 				    	
 				    	if(game.setUpArena(latLng))
-				    		startWorker();	
+				    	{
+				    		Button button = (Button)findViewById(R.id.towerButton);
+				    		
+				    		button.setClickable(true);
+				    		startWorker();
+				    	}
 				    }
 				    else
 				    {
@@ -88,11 +102,20 @@ public class MainActivity extends Activity {
 						  
 						  signal++;		    	
 
-						  game.addTower(0, 50, latLng, signal);
+						  game.addTower(0, 500, latLng, signal);
 						  
 				    }
 				}
 			});		
+	  }
+	  
+	  public void towerButtonClk(View view)
+	  {
+		  Criteria criteria = new Criteria();
+		  
+		  Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
+		  
+		  game.addTower(0, 50, new LatLng(location.getLatitude(), location.getLongitude()), signal);
 	  }
 	  
 	  private void startWorker()

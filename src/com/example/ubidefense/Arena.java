@@ -96,7 +96,7 @@ public class Arena {
 				distance = Auxiliar.distance(m.getPosition(), t.getPosition());
 				
 				//Check if monster is inside tower's radius
-				if(distance <= t.getRadius())
+				if(distance <= t.getSignal())
 				{
 					if(distance < minDistance || closestTower == null)
 					{
@@ -107,19 +107,22 @@ public class Arena {
 			}
 			
 			
-			if(closestTower != null)
+			if(closestTower != null && m.getTowerId() != closestTower.getId())
 			{
 				m.setTarget(closestTower.getPosition());
-				if(closestTower.checkMonsters(minDistance))
+				if(closestTower.getPosition().equals(m.getPosition()))
+				{
 					m.setOnTower(closestTower.getId());
+					closestTower.addMonster();
+				}
 			}
 			
 			
 			//Check if monster reached end of arena
-			Point diff = new Point((m.getPosition().longitude - end.longitude), (m.getPosition().latitude - end.latitude));
-			double lenght = Math.sqrt((diff.x*diff.x) + (diff.y*diff.y));
+			//Point diff = new Point((m.getPosition().longitude - end.longitude), (m.getPosition().latitude - end.latitude));
+			//double lenght = Math.sqrt((diff.x*diff.x) + (diff.y*diff.y));
 			
-			if(lenght <= 0.000001)
+			if(m.getPosition().equals(end))
 			{			
 				m.kill();
 				

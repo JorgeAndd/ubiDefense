@@ -11,6 +11,8 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.util.SparseArray;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -52,13 +54,12 @@ public class GameLoop extends AsyncTask<Void, Void, Void> {
 	}
 
 	protected Void doInBackground(Void... params) {
-		
-		double SKIP_TICKS = 1000/60.0D;
+		double SKIP_TICKS = 1000.0D/30.0D;
 		int MAX_FRAMESKIP = 10;
-		
+
 		double next_game_tick = SystemClock.uptimeMillis();
 		int loops;
-		
+
 		while (running) {
 			loops = 0;
 			while(SystemClock.uptimeMillis() > next_game_tick && loops < MAX_FRAMESKIP)
@@ -67,14 +68,14 @@ public class GameLoop extends AsyncTask<Void, Void, Void> {
 				//Add just one monster, for test purposes
 				if(arena.getMonsters().size() < 1)
 					addMonster();
-				
+		
 				next_game_tick += SKIP_TICKS;
 				loops++;
 			}
 			//Render stuff
 			publishProgress();
 		}
-		
+
 		return null;
 
 	}
@@ -82,9 +83,8 @@ public class GameLoop extends AsyncTask<Void, Void, Void> {
 	 * Do every render related operations
 	 */
 	public void onProgressUpdate(Void... params) {
+		
 		//Move monsters
-		
-		
 		for(int i = 0; i < arena.getMonsters().size();) {
 			Monster m = arena.getMonsters().valueAt(i);
 			
@@ -130,7 +130,7 @@ public class GameLoop extends AsyncTask<Void, Void, Void> {
 				towersCircles.add(id, newCircle);
 				
 				//Draws tower radius				
-				newCircle = map.addCircle(new CircleOptions().center(t.getPosition()).radius(t.getRadius()).strokeColor(Color.TRANSPARENT).fillColor(Color.argb(50, 49, 215, 45)));
+				newCircle = map.addCircle(new CircleOptions().center(t.getPosition()).radius(t.getSignal()).strokeColor(Color.TRANSPARENT).fillColor(Color.argb(50, 49, 215, 45)));
 				radiusCircles.add(id, newCircle);
 				
 				t.setisDrawn();

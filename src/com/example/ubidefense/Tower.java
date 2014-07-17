@@ -16,8 +16,6 @@ public class Tower {
 	
 	private int nMonsters;
 	private Boolean isDrawn;
-	private static final int RADIUS_RATIO = 1;
-	private static final int PROX_RADIUS = 1;
 	
 	public Tower(int player, int battery, LatLng location, int signal, int id)
 	{
@@ -28,46 +26,33 @@ public class Tower {
 		this.signal = signal;
 		this.id = id;
 		
-		radius = signal*RADIUS_RATIO;
 		nMonsters = 0;
 		isDrawn = false;
 	}
 	
 	public void update()
 	{
-		battery -= (lossRate*nMonsters);			
+		if(nMonsters > 0)
+			battery -= (lossRate*nMonsters);			
 	}
 	
-	/*
-	 * Check if there is a monster near the tower
-	 * @param mPos position of the monster which is being checked
-	 * @return true if the monster is near, false otherwise
-	 */
-	public boolean checkMonsters(double minDistance)
-	{	
-
-		if(minDistance <= PROX_RADIUS)
-		{
-			nMonsters++;
-			return true;
-		}else
-			return false;
+	public void addMonster()
+	{
+		nMonsters++;
 	}
+	
 	
 	public LatLng getPosition()
 	{
 		return location;
 	}
 	
-	public double getRadius()
+	public double getSignal()
 	{
-		return radius;
+		return signal;
 	}
 	
-	public Boolean getisDrawn()
-	{
-		return isDrawn;
-	}
+
 	
 	public void setisDrawn()
 	{
@@ -86,5 +71,10 @@ public class Tower {
 	public Boolean isDead()
 	{
 		return (battery <= 0) ? true : false;
+	}
+	
+	public Boolean getisDrawn()
+	{
+		return isDrawn;
 	}
 }

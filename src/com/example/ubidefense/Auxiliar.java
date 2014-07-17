@@ -3,6 +3,9 @@ package com.example.ubidefense;
 import com.google.android.gms.maps.model.LatLng;
 
 public class Auxiliar {
+	/*
+	 * Returns the distance between two points in meters
+	 */
 	public static double distance(LatLng point1, LatLng point2)
 	{
 	    double earthRadius = 6371 ;
@@ -16,5 +19,24 @@ public class Auxiliar {
 	    double dist = earthRadius * c;
 
 	    return dist*1000;
+	}
+	
+	/*
+	 * Returns the angle between two points in degrees
+	 */
+	public static double angle(LatLng point1, LatLng point2)
+	{
+		double longitude1 = point1.longitude;
+		double longitude2 = point2.longitude;
+		
+		double latitude1 = Math.toRadians(point1.latitude);
+		double latitude2 = Math.toRadians(point2.latitude);
+		
+		double longDiff = Math.toRadians(longitude2 - longitude1);
+		
+		double y= Math.sin(longDiff)*Math.cos(latitude2);
+		double x=Math.cos(latitude1)*Math.sin(latitude2)-Math.sin(latitude1)*Math.cos(latitude2)*Math.cos(longDiff);
+
+		return (Math.toDegrees(Math.atan2(y, x))+360)%360;
 	}
 }
