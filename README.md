@@ -27,9 +27,9 @@ ___________________________________________
 
  
 - Inimigos: 
- -Os inimigos surgem no começo da arena e seguem em linha reta até o seu final. Eles possuem uma quantidade de energia, que determina o tempo que irão sobreviver na arena;
- -Ao entrarem dentro do raio de alcance de uma torre eles seguem em linha reta em direção a essa torre;
- -Ao chegarem na torre, os inimigos diminuem a bateria da torre;
+ - Os inimigos surgem no começo da arena e seguem em linha reta até o seu final. Eles possuem uma quantidade de energia, que determina o tempo que irão sobreviver na arena;
+ - Ao entrarem dentro do raio de alcance de uma torre eles seguem em linha reta em direção a essa torre;
+ - Ao chegarem na torre, os inimigos diminuem a bateria da torre;
 
 
 *Tecnologia:*
