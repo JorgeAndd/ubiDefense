@@ -26,7 +26,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 
-public class GameLoop extends AsyncTask<Void, Void, Void> {	
+public class GameLoop extends AsyncTask<Void, ArenaWrapper, Void> {	
 	private Arena arena;
 	private boolean running = false;
 	private GoogleMap map;
@@ -58,8 +58,8 @@ public class GameLoop extends AsyncTask<Void, Void, Void> {
 
 	protected Void doInBackground(Void... params) {
 		
-		double SKIP_TICKS = 1000/60.0D;
-		int MAX_FRAMESKIP = 10;
+		double SKIP_TICKS = 1000/10.0D;
+		int MAX_FRAMESKIP = 3;
 		
 		double next_game_tick = SystemClock.uptimeMillis();
 		int loops;
@@ -77,14 +77,17 @@ public class GameLoop extends AsyncTask<Void, Void, Void> {
 				loops++;
 			}
 			//Render stuff
-			publishProgress();
+			publishProgress(new ArenaWrapper(arena.getTowers(), arena.getMonsters()));
 		}
 		return null;
 	}
 	/*
 	 * Do every render related operations
 	 */
-	public void onProgressUpdate(Void... params) {
+	public void onProgressUpdate(ArenaWrapper... objects) {
+		SparseArray<Tower> towers = objects[0].towers;
+		SparseArray<Monster> monsters = objects[0].monsters;
+		
 		//Updates lives
 		int lives = arena.getLives();
 		TextView livesT= (TextView)activityContext.findViewById(R.id.livesText);
@@ -92,19 +95,19 @@ public class GameLoop extends AsyncTask<Void, Void, Void> {
 		
 		
 		//Move monsters
-		for(int i = 0; i < arena.getMonsters().size();) {
-			Monster m = arena.getMonsters().valueAt(i);
+		for(int i = 0; i < monsters.size();) {
+			Monster m = monsters.valueAt(i);
 			
 			int id = m.getId();
 						
 			//Check if monster circle is already drawn. If not, draw 
-			if(arena.getMonsters().valueAt(i).drawn == false)
+			if(monsters.valueAt(i).drawn == false)
 			{
-				Marker newCircle = map.addMarker(new MarkerOptions().position(arena.getMonsters().valueAt(i).getPosition())
+				Marker newCircle = map.addMarker(new MarkerOptions().position(m.getPosition())
 																		.icon(BitmapDescriptorFactory.fromAsset("skull.png"))
 																		.anchor(0.5f, 0.5f));
 				monstersCircles.append(m.getId(), newCircle);
-				arena.getMonsters().valueAt(i).drawn = true;
+				monsters.valueAt(i).drawn = true;
 			}
 			
 			Marker circle = monstersCircles.get(id);
@@ -123,9 +126,9 @@ public class GameLoop extends AsyncTask<Void, Void, Void> {
 
 		
 		//Updates towers	
-		for(int i = 0; i < arena.getTowers().size(); i++)
+		for(int i = 0; i < towers.size(); i++)
 		{
-			Tower t = arena.getTowers().valueAt(i);
+			Tower t = towers.valueAt(i);
 			
 			int id = t.getId();
 			

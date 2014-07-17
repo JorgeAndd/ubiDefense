@@ -15,8 +15,8 @@ public class Monster {
 	private LatLng target;
 	public boolean drawn = false;
 	
-	private static final float SPEED = 1f;
-	private static final float TIME_STEP = 1.f/30.f;
+	private static final float SPEED = 5f;
+	private static final float TIME_STEP = 1.f/10.f;
 	
 	public Monster(LatLng position, int strenght, LatLng target, int id)
 	{
@@ -53,6 +53,7 @@ public class Monster {
 			double dx = target.longitude - position.longitude;
 			double dy = target.latitude - position.latitude;
 			
+			//Get the distance between the two coordinates
 			double lenght = Auxiliar.distance(target, position);
 			
 			if(lenght > SPEED * TIME_STEP)
